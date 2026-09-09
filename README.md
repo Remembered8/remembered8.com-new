@@ -158,7 +158,18 @@ Live on Laravel Forge, on the `ancient-river` server, one site per app:
 
 `mobile` is packaged onto devices, and the same Vite build is also served at
 `mobile.remembered8.com` so it can be opened in a phone browser without signing
-and installing anything. Inside Capacitor the address bar does not exist, so the
+and installing anything.
+
+Its interface is not the web app's. It began as a copy of it, which meant a
+390px phone rendering a 530px page with the masthead's ten controls stacked on
+top of each other, so the shell was rebuilt for the screen it runs on: a top bar
+that changes with the view, a bottom tab bar, a sheet for the rest, and an
+archive written for one column. The broadsheet landing and the desktop masthead
+stay in `app`, where the width they need exists.
+
+The web app keeps its broadsheet and gains a second, compact bar below `md`.
+Both are held to the same floor: nothing may make the page wider than the phone,
+and every control is at least 44px. Inside Capacitor the address bar does not exist, so the
 deep-link helpers stand down there and drive the URL only on the web; the split
 is decided by `Capacitor.isNativePlatform()`, because Capacitor serves the bundle
 over https on Android and the protocol says nothing.
