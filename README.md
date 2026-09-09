@@ -7,21 +7,41 @@ people carry of them.
 This is the split rebuild of the single-app version that lives beside it in
 `../remembered8.com`. Four applications, one registry.
 
+Each app is its own repository, wired in here as a submodule. This umbrella
+holds the cross-cutting pieces: the end-to-end suite that drives several apps at
+once, and this document.
+
 ```
 remembered8.com-new/
-├── api/          Laravel 13 — the registry, REST, no UI
-├── admin/        Laravel 13 + Filament 5 — curation and moderation
-├── app/          Next.js 16 — the public site, server rendered
-├── mobile/       React + Capacitor — the same shell, packaged for devices
-└── e2e/          Playwright — the suite that drives api and app together
+├── api/          submodule -> Remembered8/api.remembered8.com
+├── admin/        submodule -> Remembered8/admin.remembered8.com
+├── app/          submodule -> Remembered8/app.remembered8.com
+├── mobile/       submodule -> Remembered8/mobile.remembered8.com
+└── e2e/          Playwright, lives here because it spans api and app
 ```
 
-| Part | Stack | Local address |
-| --- | --- | --- |
-| api | Laravel 13.31, PHP 8.4 | `http://api.remembered8.localhost` |
-| admin | Laravel 13.31, Filament 5.8 | `http://admin.remembered8.localhost/admin` |
-| app | Next.js 16.3, React 19.2, Tailwind 4 | `http://app.remembered8.localhost` |
-| mobile | React 19 + Vite + Capacitor 7 | `npm run dev`, then `npx cap run` |
+Clone it with the submodules, or fetch them afterwards:
+
+```bash
+git clone --recurse-submodules git@github.com:Remembered8/remembered8.com-new.git
+# or, in an existing clone
+git submodule update --init --recursive
+```
+
+A submodule is pinned to one commit. After pulling changes inside an app,
+commit the new pointer here so the umbrella records which versions belong
+together:
+
+```bash
+git add api && git commit -m "Bump api"
+```
+
+| Part | Repository | Stack | Local address |
+| --- | --- | --- | --- |
+| api | `api.remembered8.com` | Laravel 13.31, PHP 8.4 | `http://api.remembered8.localhost` |
+| admin | `admin.remembered8.com` | Laravel 13.31, Filament 5.8 | `http://admin.remembered8.localhost/admin` |
+| app | `app.remembered8.com` | Next.js 16.3, React 19.2, Tailwind 4 | `http://app.remembered8.localhost` |
+| mobile | `mobile.remembered8.com` | React 19 + Vite + Capacitor 7 | `npm run dev`, then `npx cap run` |
 
 ## Why it was split
 

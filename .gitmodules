@@ -1,0 +1,12 @@
+[submodule "api"]
+	path = api
+	url = git@github.com:Remembered8/api.remembered8.com.git
+[submodule "admin"]
+	path = admin
+	url = git@github.com:Remembered8/admin.remembered8.com.git
+[submodule "app"]
+	path = app
+	url = git@github.com:Remembered8/app.remembered8.com.git
+[submodule "mobile"]
+	path = mobile
+	url = git@github.com:Remembered8/mobile.remembered8.com.git
