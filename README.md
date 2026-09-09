@@ -154,8 +154,14 @@ Live on Laravel Forge, on the `ancient-river` server, one site per app:
 | `https://api.remembered8.com` | 3373968 | Laravel, web root `/public`, PHP 8.4 |
 | `https://admin.remembered8.com/admin` | 3373971 | Filament panel, same database |
 | `https://app.remembered8.com` | 3373974 | Next.js behind nginx, `next start` on :3300 |
+| `https://mobile.remembered8.com` | 3374085 | the mobile app's web build, served static |
 
-`mobile` is packaged onto devices and has no server side to deploy.
+`mobile` is packaged onto devices, and the same Vite build is also served at
+`mobile.remembered8.com` so it can be opened in a phone browser without signing
+and installing anything. Inside Capacitor the address bar does not exist, so the
+deep-link helpers stand down there and drive the URL only on the web; the split
+is decided by `Capacitor.isNativePlatform()`, because Capacitor serves the bundle
+over https on Android and the protocol says nothing.
 
 The apex `remembered8.com` is deliberately untouched: it still serves the
 single-app Cloudflare Worker beside this rebuild. Pointing the apex at
