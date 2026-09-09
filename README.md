@@ -18,9 +18,9 @@ remembered8.com-new/
 
 | Part | Stack | Local address |
 | --- | --- | --- |
-| api | Laravel 13.31, PHP 8.4 | `http://api.remembered8.test` |
-| admin | Laravel 13.31, Filament 5.8 | `http://admin.remembered8.test/admin` |
-| app | Next.js 16.3, React 19.2, Tailwind 4 | `http://remembered8.test` |
+| api | Laravel 13.31, PHP 8.4 | `http://api.remembered8.localhost` |
+| admin | Laravel 13.31, Filament 5.8 | `http://admin.remembered8.localhost/admin` |
+| app | Next.js 16.3, React 19.2, Tailwind 4 | `http://app.remembered8.localhost` |
 | mobile | React 19 + Vite + Capacitor 7 | `npm run dev`, then `npx cap run` |
 
 ## Why it was split
@@ -56,17 +56,12 @@ cd mobile && npm install && npm run dev
 ```
 
 The Laravel apps are served by Laragon vhosts, not `php artisan serve`. The
-`.conf` files are already written into `C:\laragon\etc\apache2\sites-enabled`;
-they need two things done by hand, because both require rights this setup does
-not have:
+`.conf` files live in `C:\laragon\etcpache2\sites-enabled` and use
+`*.localhost`, matching the convention the other projects on this machine
+follow. Restart Apache from Laragon after adding or renaming one.
 
-1. Add to `C:\Windows\System32\drivers\etc\hosts` as administrator:
-   ```
-   127.0.0.1 api.remembered8.test
-   127.0.0.1 admin.remembered8.test
-   127.0.0.1 remembered8.test
-   ```
-2. Restart Apache from Laragon.
+`app.remembered8.localhost` proxies to the Next dev server on port 3000, so
+`cd app && npm run dev` has to be running for it to answer.
 
 ## The registry
 
