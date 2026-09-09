@@ -147,5 +147,31 @@ the harness has to be self-contained and runnable in CI.
 
 ## Deployment
 
-The single-app version is still what serves remembered8.com. This split is not
-deployed yet.
+Live on Laravel Forge, on the `ancient-river` server, one site per app:
+
+| Host | Forge site | Serves |
+| --- | --- | --- |
+| `https://api.remembered8.com` | 3373968 | Laravel, web root `/public`, PHP 8.4 |
+| `https://admin.remembered8.com/admin` | 3373971 | Filament panel, same database |
+| `https://app.remembered8.com` | 3373974 | Next.js behind nginx, `next start` on :3300 |
+
+`mobile` is packaged onto devices and has no server side to deploy.
+
+The apex `remembered8.com` is deliberately untouched: it still serves the
+single-app Cloudflare Worker beside this rebuild. Pointing the apex at
+`app.remembered8.com` is a separate decision, not a side effect of shipping the
+split.
+
+One MySQL database, `remembered8`, shared by the api and the admin. The api owns
+the schema and is the only one that migrates, because both repositories carry
+the same migration files and running them from two places only invites a race.
+
+Deploys run from the `forge-manager` repository, which holds the credentials:
+
+```bash
+node --env-file=.env scripts/deploy-remembered8.js               # full run
+node --env-file=.env scripts/deploy-remembered8.js --deploy-only # redeploy the three
+```
+
+Push-to-deploy is off. A deploy is a deliberate act until the app has enough
+tests running in CI to make an automatic one safe.
