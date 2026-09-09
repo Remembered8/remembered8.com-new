@@ -24,3 +24,9 @@
 
 .DS_Store
 Thumbs.db
+
+# E2E artefacts
+/e2e/node_modules/
+/e2e/test-results/
+/e2e/playwright-report/
+/api/database/e2e.sqlite

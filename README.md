@@ -11,16 +11,17 @@ This is the split rebuild of the single-app version that lives beside it in
 remembered8.com-new/
 ├── api/          Laravel 13 — the registry, REST, no UI
 ├── admin/        Laravel 13 + Filament 5 — curation and moderation
-├── frontend/     Next.js 16 — the public site, server rendered
-└── mobile-app/   SwiftUI sources and the iOS handoff spec
+├── app/          Next.js 16 — the public site, server rendered
+├── mobile/       React + Capacitor — the same shell, packaged for devices
+└── e2e/          Playwright — the suite that drives api and app together
 ```
 
 | Part | Stack | Local address |
 | --- | --- | --- |
 | api | Laravel 13.31, PHP 8.4 | `http://api.remembered8.test` |
 | admin | Laravel 13.31, Filament 5.8 | `http://admin.remembered8.test/admin` |
-| frontend | Next.js 16.3, React 19.2, Tailwind 4 | `http://remembered8.test` |
-| mobile-app | SwiftUI | Xcode |
+| app | Next.js 16.3, React 19.2, Tailwind 4 | `http://remembered8.test` |
+| mobile | React 19 + Vite + Capacitor 7 | `npm run dev`, then `npx cap run` |
 
 ## Why it was split
 
@@ -29,7 +30,7 @@ Two reasons, both concrete.
 **Link previews.** The single-app version rendered every memorial client-side at
 `/?id=x`. A family sharing a memorial in a WhatsApp group got the generic site
 card, not the person. Search engines saw the same empty shell. The Next.js
-frontend renders each dossier on the server, so the title, description and
+app renders each dossier on the server, so the title, description and
 portrait in the page source belong to the person being remembered.
 
 **Accounts and moderation.** The old admin panel was a modal inside the public
@@ -47,8 +48,11 @@ cd api && composer install && php artisan migrate --seed
 # admin (reads the same database as the api)
 cd admin && composer install
 
-# frontend
-cd frontend && npm install && npm run dev
+# app
+cd app && npm install && npm run dev
+
+# mobile (same shell, packaged for devices)
+cd mobile && npm install && npm run dev
 ```
 
 The Laravel apps are served by Laragon vhosts, not `php artisan serve`. The
@@ -60,6 +64,7 @@ not have:
    ```
    127.0.0.1 api.remembered8.test
    127.0.0.1 admin.remembered8.test
+   127.0.0.1 remembered8.test
    ```
 2. Restart Apache from Laragon.
 
@@ -99,11 +104,21 @@ cd ../remembered8.com
 node scripts/export-seed-dossiers.mjs ../remembered8.com-new/api/database/seeds/memorials.json
 ```
 
-## What is not carried over yet
+## End to end
 
-The single-app version is still the one deployed at remembered8.com. This split
-has the registry, the admin panel and the server-rendered memorial pages; the
-rest of the public interface (the landing broadsheet, the profile sections, the
-modals, the consent banner) still needs porting from `../remembered8.com/src`.
-The shared modules that made it across untouched are the type definitions, the
-TR/EN dictionary, and the consent, analytics, storage and controller modules.
+`e2e/` drives the real thing: Playwright starts the Laravel registry and the
+Next.js site, against a throwaway SQLite database rebuilt per run, and exercises
+them together. Seventeen tests: the registry contract including its refusals,
+and the site including the link previews the split exists for.
+
+```bash
+cd e2e && npm install && npx playwright test
+```
+
+The API runs under `artisan serve` there rather than its Laragon vhost, because
+the harness has to be self-contained and runnable in CI.
+
+## Deployment
+
+The single-app version is still what serves remembered8.com. This split is not
+deployed yet.
