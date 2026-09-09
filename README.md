@@ -60,8 +60,20 @@ The Laravel apps are served by Laragon vhosts, not `php artisan serve`. The
 `*.localhost`, matching the convention the other projects on this machine
 follow. Restart Apache from Laragon after adding or renaming one.
 
-`app.remembered8.localhost` proxies to the Next dev server on port 3000, so
-`cd app && npm run dev` has to be running for it to answer.
+`app.remembered8.localhost` proxies to a Next server on port 3000. Point it at a
+production server, not the dev server:
+
+```bash
+cd app && npm run build && npm run start -- --port 3000
+```
+
+`next dev` behind that proxy loads its JavaScript but never finishes hydrating.
+Apache does not forward the HMR WebSocket, and the Turbopack dev runtime keeps
+retrying it instead of handing over, so the page renders and then ignores every
+click. `next start` has no HMR socket and behaves through the proxy exactly as
+it does directly.
+
+While actually developing, skip Apache and use `http://localhost:3000`.
 
 ## The registry
 
