@@ -1,0 +1,26 @@
+# Dependencies
+/*/vendor/
+/*/node_modules/
+
+# Build output
+/frontend/.next/
+/frontend/out/
+/api/public/build/
+/admin/public/build/
+
+# Local environment and databases
+/*/.env
+/*/.env.local
+/api/database/*.sqlite
+/api/database/*.sqlite-journal
+/admin/database/*.sqlite
+
+# Laravel runtime
+/*/storage/logs/*
+/*/storage/framework/cache/data/*
+/*/storage/framework/sessions/*
+/*/storage/framework/views/*
+/*/bootstrap/cache/*
+
+.DS_Store
+Thumbs.db
